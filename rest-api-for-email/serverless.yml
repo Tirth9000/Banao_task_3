@@ -1,0 +1,31 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: testing01
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: email-rest-api
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: rest-api-for-email
+
+custom:
+  wsgi:
+    app: wsgi_handler.application
+    packRequirements: false
+
+provider:
+  name: aws
+  runtime: python3.12
+
+functions:
+  api:
+    handler: wsgi_handler.application
+    events:
+      - http:
+          path: /
+          method: ANY
+      - http:
+          path: /{proxy+}
+          method: ANY
+
+plugins:
+  - serverless-wsgi
+  - serverless-python-requirements
+  - serverless-offline
